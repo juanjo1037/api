@@ -2,7 +2,9 @@ package com.movies.api.controller;
 
 import com.movies.api.dto.Message;
 import com.movies.api.dto.ReservationDto;
+import com.movies.api.entity.Movie;
 import com.movies.api.entity.Reservation;
+import com.movies.api.service.MovieService;
 import com.movies.api.service.UserService;
 import com.movies.api.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/reservation")
@@ -18,6 +21,7 @@ import java.util.List;
 public class ReservationController {
     @Autowired
     ReservationService reservationService;
+    MovieService movieService;
     UserService userService;
 
 
@@ -31,7 +35,7 @@ public class ReservationController {
     @GetMapping("/detail/{id}")
     public ResponseEntity<Reservation>getById(@PathVariable("id")Long id){
 
-        if(!reservationService.existById(id))
+        if(reservationService.existById(id))
             return new ResponseEntity(new Message("no existe una reserva con ese Id"), HttpStatus.NOT_FOUND);
         Reservation reservation= reservationService.getById(id).get();
         return new ResponseEntity(reservation, HttpStatus.OK);
@@ -40,12 +44,14 @@ public class ReservationController {
     @PostMapping("/create")
     public ResponseEntity<?> createReservation(@RequestBody ReservationDto reservationDto){
 
+        Optional<Movie> optMovie= movieService.findByTitleAndFormat(reservationDto.getMovieTitle(),reservationDto.getMovieFormat());
+        if (!optMovie.isPresent()){
+            return new ResponseEntity("La pelicula no se encontró", HttpStatus.NOT_FOUND);
+        }
+        return  reservationService.createReservation(reservationDto, optMovie);
 
 
-            Reservation reservation= new Reservation(reservationDto.getChairsNumber(),reservationDto.getPrice(),
-                    reservationDto.getUser(), reservationDto.getMovie());
-            reservationService.save(reservation);
-            return new ResponseEntity<>(new Message("reserva creada"), HttpStatus.OK);
+
     }
 
     @PutMapping("/update")
@@ -56,10 +62,10 @@ public class ReservationController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")Long id){
-        if(!reservationService.existById(id))
-            return new ResponseEntity(new Message("no existe una reserva con ese Id"), HttpStatus.NOT_FOUND);
+        if(reservationService.existById(id))
+            return new ResponseEntity("no existe una reserva con ese Id", HttpStatus.NOT_FOUND);
         reservationService.delete(id);
-        return new ResponseEntity<>(new Message("reserva eliminada"), HttpStatus.OK);
+        return new ResponseEntity<>("reserva eliminada", HttpStatus.OK);
 
     }
 }

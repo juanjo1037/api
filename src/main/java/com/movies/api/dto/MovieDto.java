@@ -6,11 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class MovieDto {
+public class MovieDto implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String title;
     private String genre;
     private String synopsis;
@@ -18,6 +22,7 @@ public class MovieDto {
     private String schedule;
     private String duration;
     private float price;
-    private Long roomId;
+    private Long idRoom;
+
 
 }

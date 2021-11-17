@@ -1,7 +1,7 @@
 package com.movies.api.service;
 
 
-import com.movies.api.entity.Rol;
+import com.movies.api.entity.Role;
 import com.movies.api.enums.RolName;
 import com.movies.api.repository.RolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class RolService {
     @Autowired
     RolRepository rolRepository;
 
-    public Optional<Rol> getByRolName(RolName rolName){
+    public Optional<Role> getByRolName(RolName rolName){
         return rolRepository.findByRolName(rolName);
 
     }

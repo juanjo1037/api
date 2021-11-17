@@ -24,26 +24,26 @@ public class MovieController {
     @Autowired
     MovieService movieService;
 
-
+    @Autowired
     RoomService roomService;
 
     @GetMapping("/list")
     public ResponseEntity<List<Movie>>listAll(){
-        Iterable<Movie> list=movieService.findAll();
+        List<Movie> list=movieService.findMoviesByBillboard();
         return new ResponseEntity(list, HttpStatus.OK);
     }
 
     @GetMapping("/detail/{id}")
     public ResponseEntity<Movie>getById(@PathVariable("id")Long id){
 
-        if(!movieService.existById(id))
+        if(movieService.existById(id))
             return new ResponseEntity(new Message("no existe una pelicula con ese Id"), HttpStatus.NOT_FOUND);
         Movie movie= movieService.findById(id).get();
         return new ResponseEntity(movie, HttpStatus.OK);
     }
 
     @GetMapping("/detail_title/{title}")
-    public ResponseEntity<Movie>getByTitle(@PathVariable("title")String title){
+    public ResponseEntity<Movie> getByTitle(@PathVariable("title")String title){
 
         if(movieService.findByTitle(title)==null)
             return new ResponseEntity(new Message("no existe una pelicula con ese titulo"), HttpStatus.NOT_FOUND);
@@ -53,28 +53,22 @@ public class MovieController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createMovie(@RequestBody MovieDto movieDto){
-
-
-        return movieService.createMovie(movieDto);
+        Optional<Room>optRoom= roomService.findById(movieDto.getIdRoom());
+        if (!optRoom.isPresent()){
+            return new ResponseEntity("La sala no se encontró", HttpStatus.NOT_FOUND);
+        }
+            return movieService.createMovie(movieDto,optRoom);
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody MovieDto movieDto){
-        Movie movie= movieService.findById(id).get();
-        movie.setTitle(movieDto.getTitle());
-        movie.setGenre(movieDto.getGenre());
-        movie.setSynopsis(movieDto.getSynopsis());
-        movie.setFormat(movieDto.getFormat());
-        movie.setSchedule(movieDto.getSchedule());
-        movie.setPrice(movieDto.getPrice());
-        List<Room> rooms= roomService.findById(movieDto.getRoomId());
-        movie.setRooms(rooms);
-        return new ResponseEntity<>(new Message("Pelicula Actualizada"),HttpStatus.OK);
+
+        return movieService.updateMovie(id, movieDto);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")Long id){
-        if(!movieService.existById(id))
+        if(movieService.existById(id))
             return new ResponseEntity(new Message("no existe una reserva con ese Id"), HttpStatus.NOT_FOUND);
         movieService.delete(id);
         return new ResponseEntity<>(new Message("reserva eliminada"), HttpStatus.OK);

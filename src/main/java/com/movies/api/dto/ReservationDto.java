@@ -7,22 +7,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Min;
+import java.io.Serializable;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class ReservationDto {
+public class ReservationDto implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-    @Min(1)
-    private int chairsNumber;
-    @Min(0)
+
+
     private float price;
 
     private User user;
 
-    private Movie movie;
+    private String movieTitle;
+    private String movieFormat;
 
+    private int chairsNumber;
+
+    private List<Integer> rows;
+
+    private List<Integer> columns;
 
 }

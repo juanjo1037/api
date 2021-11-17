@@ -8,20 +8,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class RoleHasUserId implements Serializable {
-    private static final long serialVersionUID = 1923851130068691164L;
-    @Column(name = "role_id_role", nullable = false)
-    private Long roleIdRole;
+public class PermissionId implements Serializable {
+    private static final long serialVersionUID = 6489021462409984216L;
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+    @Column(name = "role_id", nullable = false)
+    private Long roleIdRole;
 
     public Long getRoleIdRole() {
         return roleIdRole;
@@ -29,6 +21,14 @@ public class RoleHasUserId implements Serializable {
 
     public void setRoleIdRole(Long roleIdRole) {
         this.roleIdRole = roleIdRole;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class RoleHasUserId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        RoleHasUserId entity = (RoleHasUserId) o;
+        PermissionId entity = (PermissionId) o;
         return Objects.equals(this.roleIdRole, entity.roleIdRole) &&
                 Objects.equals(this.userId, entity.userId);
     }

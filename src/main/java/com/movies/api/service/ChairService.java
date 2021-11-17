@@ -29,24 +29,9 @@ public class ChairService {
         return chairRepository.existsById(id);
     }
 
-    public List<Chair> findByRowAndColumn(int row, int column) {
+    public Optional<Chair> findByRowAndColumn(int row, int column) {
         return chairRepository.findByRowAndColumn(row,column);
     }
-    public List<Chair>findByReserved(boolean reserved){
-        return chairRepository.findByReserved(reserved);
-    }
-
-    public EntityResponse<Chair> reserveChair(int column, int row){
-            try{
-                List<Chair> chair= chairRepository.findByRowAndColumn(row,column);
 
 
-
-
-            }catch (Exception e){
-
-
-            }
-    return null;
-    }
 }

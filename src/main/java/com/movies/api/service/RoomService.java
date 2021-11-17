@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -16,10 +17,12 @@ public class RoomService {
     RoomRepository roomRepository;
 
 
-    public List<Room> findById(Long id) {
+    public Optional<Room> findById(Long id) {
         return roomRepository.findById(id);
     }
-
+public boolean existsById(Long id){
+        return roomRepository.existsById(id);
+}
     public List<Room> findByCapacity(int capacity){
 
         return roomRepository.findByCapacity(capacity);

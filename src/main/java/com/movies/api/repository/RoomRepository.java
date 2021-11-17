@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Room,Long> {
+public interface RoomRepository extends JpaRepository<Room, Long> {
 
     @Override
     Optional<Room> findById(Long id);
-
+    @Override
+    boolean existsById(Long id);
     List<Room> findByCapacity(int capacity);
 }

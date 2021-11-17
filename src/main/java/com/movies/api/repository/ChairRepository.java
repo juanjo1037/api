@@ -17,8 +17,7 @@ public interface ChairRepository  extends JpaRepository<Chair,Long> {
     @Override
     boolean existsById(@NotNull Long id);
 
-    @NotNull
-    List<Chair>findByRowAndColumn(int row, int column);
-    @NotNull
-    List<Chair>findByReserved(boolean reserved);
+
+    Optional<Chair>findByRowAndColumn(int row, int column);
+
 }

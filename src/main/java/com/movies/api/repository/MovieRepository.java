@@ -19,8 +19,10 @@ public interface MovieRepository extends JpaRepository<Movie,Long> {
     @Override
     boolean existsById(Long id );
 
+    List<Movie>findMoviesByBillboard(boolean billboard);
+
     List<Movie> findByTitle(String title);
 
-
+    Optional<Movie> findByTitleAndFormat(String title, String format);
 
 }
