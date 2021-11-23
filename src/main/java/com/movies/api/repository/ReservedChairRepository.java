@@ -1,5 +1,6 @@
 package com.movies.api.repository;
 
+import com.movies.api.entity.Chair;
 import com.movies.api.entity.ReservedChair;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,6 @@ public interface ReservedChairRepository extends JpaRepository<ReservedChair, Lo
     @Override
     Optional<ReservedChair> findById(Long id);
 
-
-
+    @Override
+    void deleteById(Long id);
 }

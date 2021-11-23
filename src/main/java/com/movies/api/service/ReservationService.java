@@ -1,6 +1,7 @@
 package com.movies.api.service;
 
 
+import com.movies.api.dto.EditReservationDto;
 import com.movies.api.dto.ReservationDto;
 import com.movies.api.entity.*;
 import com.movies.api.repository.ReservationRepository;
@@ -23,10 +24,9 @@ public class ReservationService {
         @Autowired
         ReservationRepository reservationRepository;
         @Autowired
-        MovieService movieService;
-        @Autowired
         ChairService chairService;
-
+        @Autowired
+        ReservedChairService reservedChairService;
 
         public List<Reservation> listAll(){
 
@@ -81,4 +81,23 @@ public class ReservationService {
             return new ResponseEntity<>("Reserva Creada", HttpStatus.CREATED);
     }
 
+    public ResponseEntity<String>deleteChairs(EditReservationDto editReservationDto){
+            if (!editReservationDto.getChairsToDelete().isEmpty()){
+            for ( int i=0 ; i<editReservationDto.getChairsToDelete().size(); i++ ){
+               Long index= editReservationDto.getChairsToDelete().get(i);
+
+                if (reservedChairService.findById(index).isPresent()){
+                    reservedChairService.findById(index).get().getReservation()
+                            .setChairsNumber(
+                                    reservedChairService.findById(index).get().getReservation().getChairsNumber()
+                                    -editReservationDto.getChairsToDelete().size()
+                            );
+                 reservedChairService.delete(reservedChairService.findById(index).get().getId());
+
+                }
+            }
+            return new ResponseEntity<>("La reserva se ha actualizado con éxito",HttpStatus.OK);
+            }else
+                return new ResponseEntity<>("debe seleccionar una silla reservada",HttpStatus.BAD_REQUEST);
+    }
 }

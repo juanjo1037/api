@@ -32,6 +32,8 @@ public class ChairService {
     public Optional<Chair> findByRowAndColumn(int row, int column) {
         return chairRepository.findByRowAndColumn(row,column);
     }
-
+    public void delete(Chair chair){
+        chairRepository.delete(chair);
+    }
 
 }

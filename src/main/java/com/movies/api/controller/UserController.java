@@ -27,7 +27,7 @@ public class UserController {
         User user= new User(newUser.getIdCardType(),newUser.getIdCard(),newUser.getFirstName(),newUser.getLastName(),
                 newUser.getEmail(),newUser.getPassword());
         userService.save(user);
-        return new ResponseEntity<>(new Message("reserva creada"), HttpStatus.OK);
+        return new ResponseEntity<>(new Message("Usuario Creado"), HttpStatus.CREATED);
     }
 
 }

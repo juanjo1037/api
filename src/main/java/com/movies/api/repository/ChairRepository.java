@@ -20,4 +20,5 @@ public interface ChairRepository  extends JpaRepository<Chair,Long> {
 
     Optional<Chair>findByRowAndColumn(int row, int column);
 
+
 }

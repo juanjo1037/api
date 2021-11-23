@@ -1,5 +1,6 @@
 package com.movies.api.controller;
 
+import com.movies.api.dto.EditReservationDto;
 import com.movies.api.dto.Message;
 import com.movies.api.dto.ReservationDto;
 import com.movies.api.entity.Movie;
@@ -54,15 +55,15 @@ public class ReservationController {
 
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody ReservationDto reservationDto){
+    @DeleteMapping("/delete-chairs")
+    public ResponseEntity<?> deleteChairs(@RequestBody EditReservationDto editReservationDto){
 
-        return null;
+            return reservationService.deleteChairs(editReservationDto);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")Long id){
-        if(reservationService.existById(id))
+        if(!reservationService.existById(id))
             return new ResponseEntity("no existe una reserva con ese Id", HttpStatus.NOT_FOUND);
         reservationService.delete(id);
         return new ResponseEntity<>("reserva eliminada", HttpStatus.OK);
