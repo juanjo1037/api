@@ -8,9 +8,11 @@ import com.movies.api.entity.Room;
 import com.movies.api.service.MovieService;
 import com.movies.api.service.RoomService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +29,14 @@ public class MovieController {
     @Autowired
     RoomService roomService;
 
-    @GetMapping("/list")
+
+    @Operation(summary = "Listar las peliculas que están en cartelera")
+    @GetMapping
     public ResponseEntity<List<Movie>>listAll(){
         List<Movie> list=movieService.findMoviesByBillboard();
         return new ResponseEntity(list, HttpStatus.OK);
     }
-
+    @Operation(summary = "Obtener una pelicula por su id")
     @GetMapping("/detail/{id}")
     public ResponseEntity<Movie>getById(@PathVariable("id")Long id){
 
@@ -41,7 +45,7 @@ public class MovieController {
         Movie movie= movieService.findById(id).get();
         return new ResponseEntity(movie, HttpStatus.OK);
     }
-
+    @Operation(summary = "Obtener una pelicula por su titulo")
     @GetMapping("/detail_title/{title}")
     public ResponseEntity<Movie> getByTitle(@PathVariable("title")String title){
 
@@ -50,7 +54,9 @@ public class MovieController {
         Movie movie= (Movie) movieService.findByTitle(title);
         return new ResponseEntity(movie, HttpStatus.OK);
     }
-
+    
+    @Operation(summary = "crear una pelicula")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/create")
     public ResponseEntity<?> createMovie(@RequestBody MovieDto movieDto){
         Optional<Room>optRoom= roomService.findById(movieDto.getIdRoom());
@@ -60,12 +66,15 @@ public class MovieController {
             return movieService.createMovie(movieDto,optRoom);
     }
 
+    @Operation(summary = "modificar una pelicula")
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/update/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody MovieDto movieDto){
 
         return movieService.updateMovie(id, movieDto);
     }
-
+    @Operation(summary = "eliminar una pelicula")
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")Long id){
         if(movieService.existById(id))

@@ -43,7 +43,7 @@ public class MovieService {
     }
 
     public List<Movie>findMoviesByBillboard(){
-            return movieRepository.findMoviesByBillboard(false);
+            return movieRepository.findMoviesByBillboard(true);
         }
 
 

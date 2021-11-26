@@ -21,10 +21,9 @@ public class Role  {
      @NotNull
      @Column(name = "role_name")
      @Enumerated(EnumType.STRING)
-    private RolName rolName;
+     private RolName rolName;
 
-    @ManyToMany(mappedBy = "roles")
-    private List<User> users;
+
 
     public Role(@NotNull RolName rolName) {
         this.rolName = rolName;
@@ -39,7 +38,5 @@ public class Role  {
     }
 
 
-    public void setUsers(List<User> users) {
-        this.users = users;
-    }
+
 }

@@ -29,4 +29,8 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public boolean existsByDocument(String document){
+
+        return userRepository.existsByDocument(document);
+    }
 }

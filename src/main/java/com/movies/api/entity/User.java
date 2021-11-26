@@ -45,12 +45,12 @@ public class User implements Serializable {
     @Column(name = "password")
     private String password;
     @NotNull
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "permission",
             joinColumns = @JoinColumn(name = "user_id", nullable = false),
             inverseJoinColumns = @JoinColumn(name= "role_id", nullable = false)
     )
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Role> roles;
 
     @JsonBackReference
@@ -142,3 +142,7 @@ public void addReservations(Reservation reservation){
         this.reservationList = reservationList;
     }
 }
+
+
+
+
