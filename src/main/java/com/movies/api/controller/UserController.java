@@ -1,7 +1,7 @@
 package com.movies.api.controller;
 
 
-import com.movies.api.dto.Message;
+
 import com.movies.api.dto.NewUser;
 import com.movies.api.entity.Role;
 import com.movies.api.entity.User;
@@ -19,7 +19,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -76,8 +75,7 @@ public class UserController {
                 new UsernamePasswordAuthenticationToken(loginUser.getEmail(),loginUser.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt =  jwtProvider.generateToken(authentication);
-        UserDetails userDetails= (UserDetails) authentication.getPrincipal();
-        JwtDto jwtDto= new JwtDto(jwt, userDetails.getUsername(),userDetails.getAuthorities());
+        JwtDto jwtDto= new JwtDto(jwt);
         return new ResponseEntity<>(jwtDto, HttpStatus.OK);
     }
 

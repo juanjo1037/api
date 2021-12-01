@@ -57,9 +57,9 @@ public class MainSecurity extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/login","/auth/registration",
+                .antMatchers("/auth/**",
                         "/","/movie","/movie/detail/{id}",
-                        "/movie/detail/{title}", "/**"
+                        "/movie/detail/{title}","/swagger-ui/**"
                         )
                 .permitAll()
                 .anyRequest().authenticated()
@@ -71,12 +71,4 @@ public class MainSecurity extends WebSecurityConfigurerAdapter
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-   @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/swagger-ui",
-                "/index.html?configUrl=",
-                "/v3/api-docs",
-                "/**"
-                );
-    }
 }

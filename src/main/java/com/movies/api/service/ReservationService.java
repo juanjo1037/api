@@ -2,6 +2,7 @@ package com.movies.api.service;
 
 
 import com.movies.api.dto.EditReservationDto;
+import com.movies.api.dto.ReservationListDto;
 import com.movies.api.dto.ReservationDto;
 import com.movies.api.entity.*;
 import com.movies.api.repository.ReservationRepository;
@@ -27,11 +28,17 @@ public class ReservationService {
         ChairService chairService;
         @Autowired
         ReservedChairService reservedChairService;
+        @Autowired
+        UserService userService;
 
-        public List<Reservation> listAll(){
-
-            return reservationRepository.findAll();
+        public ResponseEntity<List<Reservation>> listAllByUser(String email){
+          if (userService.getByEmail(email).isPresent()) {
+              User user = userService.getByEmail(email).get();
+              return new ResponseEntity<>(reservationRepository.findAllByUser(user), HttpStatus.OK);
+          }
+            return new ResponseEntity("El usuario no existe o no tiene reservas", HttpStatus.NOT_FOUND);
         }
+
 
 
         public Optional<Reservation> getById(Long id){
@@ -43,7 +50,7 @@ public class ReservationService {
         }
 
         public boolean existById(Long id){
-                return !reservationRepository.existsById(id);
+                return reservationRepository.existsById(id);
         }
 
     public ResponseEntity<String> createReservation(@NotNull ReservationDto reservationDto,

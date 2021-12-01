@@ -1,6 +1,7 @@
 package com.movies.api.controller;
 
 import com.movies.api.dto.EditReservationDto;
+import com.movies.api.dto.ReservationListDto;
 import com.movies.api.dto.Message;
 import com.movies.api.dto.ReservationDto;
 import com.movies.api.entity.Movie;
@@ -27,11 +28,11 @@ public class ReservationController {
     UserService userService;
 
 
-    @Operation(summary = "listar las reservas")
+    @Operation(summary = "listar las reservas de un usuario")
     @GetMapping("/list")
-    public ResponseEntity<List<Reservation>>listAll(){
-        List<Reservation> list=reservationService.listAll();
-        return new ResponseEntity(list, HttpStatus.OK);
+    public ResponseEntity<List<Reservation>>listAllByUser(@RequestParam("email") String email){
+
+        return reservationService.listAllByUser(email);
     }
     @Operation(summary = "obtener una reserva por su id")
     @GetMapping("/detail/{id}")
@@ -64,10 +65,11 @@ public class ReservationController {
     @Operation(summary = "eliminar una reserva")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")Long id){
-        if(!reservationService.existById(id))
-            return new ResponseEntity("no existe una reserva con ese Id", HttpStatus.NOT_FOUND);
-        reservationService.delete(id);
-        return new ResponseEntity<>("reserva eliminada", HttpStatus.OK);
+        if(reservationService.existById(id)){
+            reservationService.delete(id);
+            return new ResponseEntity<>("reserva eliminada", HttpStatus.OK);
+        }
+        return new ResponseEntity("no existe una reserva con ese Id", HttpStatus.NOT_FOUND);
 
     }
 }

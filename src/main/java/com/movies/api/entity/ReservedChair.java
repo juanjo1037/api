@@ -22,6 +22,7 @@ public class ReservedChair implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "chair_id")
     private Chair chair;
+
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "reservation_id")

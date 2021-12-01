@@ -36,6 +36,7 @@ public class Reservation implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movie_id")
     private Movie movie;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ReservedChair> reservedChairs;

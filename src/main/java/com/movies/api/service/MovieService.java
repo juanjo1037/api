@@ -46,7 +46,9 @@ public class MovieService {
             return movieRepository.findMoviesByBillboard(true);
         }
 
-
+    public List<Movie>findAll(){
+        return movieRepository.findAll();
+    }
     public List<Movie> findByTitle(String title) { return movieRepository.findByTitle(title);}
 
     public Optional<Movie>findByTitleAndFormat(String title, String format){
