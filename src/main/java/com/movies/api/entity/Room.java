@@ -1,8 +1,6 @@
 package com.movies.api.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 public class Room implements Serializable {
-
+    private static final long serialVersionUID = 6489021462409984216L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -24,25 +22,13 @@ public class Room implements Serializable {
     @Column(name = "capacity")
     private int capacity;
 
-    @JsonBackReference
+    @JsonManagedReference
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
     private List<Chair> chairs;
 
-   // @JsonManagedReference
-    @JsonIgnore
-    @ManyToMany(mappedBy = "rooms", fetch = FetchType.LAZY)
-    private List<Movie> movies;
+    @JsonBackReference
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Presentation> presentations;
 
-  public Room(int capacity){
 
-      this.capacity=capacity;
-  }
-
-    public Room(long id, int capacity){
-
-        this.capacity=capacity;
-    }
-    public Room() {
-
-    }
 }

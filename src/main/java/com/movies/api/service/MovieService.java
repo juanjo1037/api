@@ -54,18 +54,17 @@ public class MovieService {
     public Optional<Movie>findByTitleAndFormat(String title, String format){
         return movieRepository.findByTitleAndFormat(title,format);
     }
-    public ResponseEntity<String> createMovie(@NotNull MovieDto movieDto, Optional<Room> optRoom) {
+    public ResponseEntity<String> createMovie(@NotNull MovieDto movieDto) {
 
-            List<Room> rooms = new ArrayList<>();
-            optRoom.ifPresent(rooms::add);
+
             Movie movie= new Movie(
                     movieDto.getTitle(),
                     movieDto.getGenre(),
                     movieDto.getSynopsis(),
                     movieDto.getFormat(),
-                    movieDto.getSchedule(),
                     movieDto.getDuration(),
-                    movieDto.getPrice(),rooms);
+                    movieDto.getPrice(),
+                    movieDto.isBillboard());
 
             movieRepository.save(movie);
             return new ResponseEntity<>("pelicula creada", HttpStatus.CREATED);
@@ -77,7 +76,6 @@ public class MovieService {
         movie.setGenre(movieDto.getGenre());
         movie.setSynopsis(movieDto.getSynopsis());
         movie.setFormat(movieDto.getFormat());
-        movie.setSchedule(movieDto.getSchedule());
         movie.setPrice(movieDto.getPrice());
         return new ResponseEntity<>("Pelicula Actualizada", HttpStatus.OK);
 

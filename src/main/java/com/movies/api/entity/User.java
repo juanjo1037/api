@@ -19,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 
 public class User implements Serializable {
-
+    private static final long serialVersionUID = 6489021462409984216L;
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)

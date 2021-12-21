@@ -9,10 +9,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "reserved_chair")
+@Table(name = "reserved_chair",  schema = "cinema_manage")
 public class ReservedChair implements Serializable {
 
-
+    private static final long serialVersionUID = 6489021462409984216L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -29,16 +29,24 @@ public class ReservedChair implements Serializable {
     private Reservation reservation;
 
     public ReservedChair(Chair chair) {
+        this.chair=chair;
     }
 
     public ReservedChair() {
 
     }
 
+    public ReservedChair(Chair chair, Reservation reservation) {
+        this.chair=chair;
+        this.reservation=reservation;
+    }
+
     public Long getId() {
         return id;
     }
-
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public Chair getChair() {
         return chair;

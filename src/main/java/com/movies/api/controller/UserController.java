@@ -47,7 +47,7 @@ public class UserController {
     @Autowired
     JwtProvider jwtProvider;
 
-    @Operation(summary = "registro de usuarios")
+    @Operation(summary = "registro de usuarios/ user registration")
     @PostMapping("/registration")
     public ResponseEntity<?> createUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult){
             if (bindingResult.hasErrors())
@@ -66,7 +66,7 @@ public class UserController {
         userService.save(user);
         return new ResponseEntity("Usuario Creado", HttpStatus.CREATED);
     }
-    @Operation(summary = "inicio de sesión")
+    @Operation(summary = "inicio de sesión/ login")
     @PostMapping("/login")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUser loginUser, BindingResult bindingResult){
         if (bindingResult.hasErrors())

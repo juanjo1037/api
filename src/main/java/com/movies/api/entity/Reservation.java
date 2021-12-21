@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name="reservation",  schema = "cinema_manage")
 public class Reservation implements Serializable {
-
+    private static final long serialVersionUID = 6489021462409984216L;
 
 
     @Id
@@ -34,8 +34,12 @@ public class Reservation implements Serializable {
 
     @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "movie_id")
-    private Movie movie;
+    @JoinColumns({
+            @JoinColumn(name = "presentation_movie_id", referencedColumnName = "movie_id"),
+            @JoinColumn(name = "presentation_room_id", referencedColumnName = "room_id"),
+            @JoinColumn(name = "presentation_schedule", referencedColumnName = "schedule")
+    })
+    private Presentation presentation;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY, orphanRemoval = true)
@@ -46,12 +50,19 @@ public class Reservation implements Serializable {
 
     }
 
-    public Reservation( int chairsNumber, float price, User user, Movie movie, List<ReservedChair> chairs) {
+    public Reservation( int chairsNumber, float price, User user, Presentation presentation, List<ReservedChair> chairs) {
         this.chairsNumber = chairsNumber;
         this.price = price;
         this.user = user;
-        this.movie = movie;
+        this.presentation = presentation;
         this.reservedChairs=chairs;
+    }
+
+    public Reservation(int chairsNumber, float price, User user, Presentation presentation) {
+        this.chairsNumber=chairsNumber;
+        this.price=price;
+        this.user=user;
+        this.presentation=presentation;
     }
 
     public long getId() {
@@ -87,12 +98,12 @@ public class Reservation implements Serializable {
         this.user = user;
     }
 
-    public Movie getMovie() {
-        return movie;
+    public Presentation getPresentation() {
+        return presentation;
     }
 
-    public void setMovie(Movie movie) {
-        this.movie = movie;
+    public void setPresentation(Presentation presentation) {
+        this.presentation = presentation;
     }
 
 

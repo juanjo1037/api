@@ -12,10 +12,10 @@ import java.io.Serializable;
 @Entity
 @Table(name = "chair",  schema = "cinema_manage")
 public class Chair implements Serializable {
-
+    private static final long serialVersionUID = 6489021462409984216L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, columnDefinition = "LONGVARBINARY")
     private long id;
     @Column(name="row")
     private int row;
@@ -27,7 +27,7 @@ public class Chair implements Serializable {
     @OneToOne(mappedBy = "chair", orphanRemoval = true, fetch = FetchType.LAZY)
     private ReservedChair reservedChair;
 
-    @JsonManagedReference
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;

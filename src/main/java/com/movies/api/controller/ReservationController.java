@@ -1,10 +1,8 @@
 package com.movies.api.controller;
 
 import com.movies.api.dto.EditReservationDto;
-import com.movies.api.dto.ReservationListDto;
 import com.movies.api.dto.Message;
 import com.movies.api.dto.ReservationDto;
-import com.movies.api.entity.Movie;
 import com.movies.api.entity.Reservation;
 import com.movies.api.service.MovieService;
 import com.movies.api.service.UserService;
@@ -16,11 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/reservation")
-@CrossOrigin(origins = "http://localhost:4200")
 public class ReservationController {
     @Autowired
     ReservationService reservationService;
@@ -28,14 +24,15 @@ public class ReservationController {
     UserService userService;
 
 
-    @Operation(summary = "listar las reservas de un usuario")
-    @GetMapping("/list")
+    @Operation(summary = "listar las reservas de un usuario/ list a user's reservations")
+    @GetMapping
     public ResponseEntity<List<Reservation>>listAllByUser(@RequestParam("email") String email){
 
         return reservationService.listAllByUser(email);
     }
-    @Operation(summary = "obtener una reserva por su id")
-    @GetMapping("/detail/{id}")
+
+    @Operation(summary = "obtener una reserva por su id/ get a reservation by your id")
+    @GetMapping("/{id}")
     public ResponseEntity<Reservation>getById(@PathVariable("id")Long id){
 
         if(reservationService.existById(id))
@@ -43,27 +40,26 @@ public class ReservationController {
         Reservation reservation= reservationService.getById(id).get();
         return new ResponseEntity(reservation, HttpStatus.OK);
     }
-    @Operation(summary = "crear reserva")
-    @PostMapping("/create")
+
+    @Operation(summary = "crear reserva/create reservation")
+    @PostMapping
     public ResponseEntity<?> createReservation(@RequestBody ReservationDto reservationDto){
 
-        Optional<Movie> optMovie= movieService.findByTitleAndFormat(reservationDto.getMovieTitle(),reservationDto.getMovieFormat());
-        if (!optMovie.isPresent()){
-            return new ResponseEntity("La pelicula no se encontró", HttpStatus.NOT_FOUND);
-        }
-        return  reservationService.createReservation(reservationDto, optMovie);
+
+        return  reservationService.createReservation(reservationDto);
 
 
 
     }
-    @Operation(summary = "eliminar sillas que pertenecen a una reserva")
-    @DeleteMapping("/delete-chairs")
+    @Operation(summary = "eliminar sillas que pertenecen a una reserva / remove chairs that belong to a reserve")
+    @DeleteMapping("/chairs")
     public ResponseEntity<?> deleteChairs(@RequestBody EditReservationDto editReservationDto){
 
             return reservationService.deleteChairs(editReservationDto);
     }
-    @Operation(summary = "eliminar una reserva")
-    @DeleteMapping("/delete/{id}")
+
+    @Operation(summary = "eliminar una reserva / remove reservation")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")Long id){
         if(reservationService.existById(id)){
             reservationService.delete(id);

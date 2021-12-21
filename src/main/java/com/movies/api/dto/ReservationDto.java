@@ -19,12 +19,13 @@ public class ReservationDto implements Serializable {
 
 
 
-    private float price;
+    //  private float price; Lo calcula la api
 
-    private User user;
+    private String email;
 
-    private String movieTitle;
-    private String movieFormat;
+    private Long idMovie;
+    private Long idRoom;
+    private String schedule;
 
     private int chairsNumber;
 

@@ -30,14 +30,14 @@ public class MovieController {
     RoomService roomService;
 
 
-    @Operation(summary = "Listar las peliculas que están en cartelera")
+    @Operation(summary = "Listar las peliculas que están en cartelera / List the movies that are on the billboard")
     @GetMapping
     public ResponseEntity<List<Movie>>listAll(){
         List<Movie> list=movieService.findMoviesByBillboard();
         return new ResponseEntity(list, HttpStatus.OK);
     }
     @Operation(summary = "Obtener una pelicula por su id")
-    @GetMapping("/detail/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Movie>getById(@PathVariable("id")Long id){
 
         if(movieService.existById(id))
@@ -45,8 +45,8 @@ public class MovieController {
         Movie movie= movieService.findById(id).get();
         return new ResponseEntity(movie, HttpStatus.OK);
     }
-    @Operation(summary = "Obtener una pelicula por su titulo")
-    @GetMapping("/detail_title/{title}")
+    @Operation(summary = "Obtener una pelicula por su titulo/Get a movie by its title")
+    @GetMapping("/{title}")
     public ResponseEntity<Movie> getByTitle(@PathVariable("title")String title){
 
         if(movieService.findByTitle(title)==null)
@@ -55,27 +55,24 @@ public class MovieController {
         return new ResponseEntity(movie, HttpStatus.OK);
     }
     
-    @Operation(summary = "crear una pelicula")
+    @Operation(summary = "crear una pelicula/ create  movie")
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<?> createMovie(@RequestBody MovieDto movieDto){
-        Optional<Room>optRoom= roomService.findById(movieDto.getIdRoom());
-        if (!optRoom.isPresent()){
-            return new ResponseEntity("La sala no se encontró", HttpStatus.NOT_FOUND);
-        }
-            return movieService.createMovie(movieDto,optRoom);
+
+            return movieService.createMovie(movieDto);
     }
 
-    @Operation(summary = "modificar una pelicula")
+    @Operation(summary = "modificar una pelicula/update movie")
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody MovieDto movieDto){
 
         return movieService.updateMovie(id, movieDto);
     }
-    @Operation(summary = "eliminar una pelicula")
+    @Operation(summary = "eliminar una pelicula/delete movie")
     @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")Long id){
         if(movieService.existById(id))
             return new ResponseEntity(new Message("no existe una reserva con ese Id"), HttpStatus.NOT_FOUND);

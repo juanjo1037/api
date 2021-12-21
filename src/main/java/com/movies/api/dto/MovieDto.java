@@ -19,10 +19,9 @@ public class MovieDto implements Serializable {
     private String genre;
     private String synopsis;
     private String format;
-    private String schedule;
     private String duration;
     private float price;
-    private Long idRoom;
+    private boolean billboard;
 
 
 }

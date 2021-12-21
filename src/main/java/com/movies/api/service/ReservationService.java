@@ -2,7 +2,6 @@ package com.movies.api.service;
 
 
 import com.movies.api.dto.EditReservationDto;
-import com.movies.api.dto.ReservationListDto;
 import com.movies.api.dto.ReservationDto;
 import com.movies.api.entity.*;
 import com.movies.api.repository.ReservationRepository;
@@ -30,8 +29,27 @@ public class ReservationService {
         ReservedChairService reservedChairService;
         @Autowired
         UserService userService;
+        @Autowired
+         MovieService movieService;
+        @Autowired
+        PresentationService presentationService;
 
-        public ResponseEntity<List<Reservation>> listAllByUser(String email){
+    public Optional<Reservation> getById(Long id){
+        return reservationRepository.findById(id);
+    }
+
+    public  void delete(Long id){
+        reservationRepository.deleteById(id);
+    }
+
+    public boolean existById(Long id){
+        return reservationRepository.existsById(id);
+    }
+
+
+
+
+    public ResponseEntity<List<Reservation>> listAllByUser(String email){
           if (userService.getByEmail(email).isPresent()) {
               User user = userService.getByEmail(email).get();
               return new ResponseEntity<>(reservationRepository.findAllByUser(user), HttpStatus.OK);
@@ -41,51 +59,63 @@ public class ReservationService {
 
 
 
-        public Optional<Reservation> getById(Long id){
-            return reservationRepository.findById(id);
+    public ResponseEntity<String> createReservation(@NotNull ReservationDto reservationDto ) {
+        User user;
+        ReservedChairService reservedChairService = new ReservedChairService();
+        List<Chair> chairs = new ArrayList<>();
+        Optional<Chair> optionalChair;
+        float price = 0;
+        PresentationId presentationId = new PresentationId(reservationDto.getIdMovie(), reservationDto.getIdRoom(), reservationDto.getSchedule());
+        Presentation presentation;
+        Chair chair;
+        Optional<Presentation> optPresentation = presentationService.findById(presentationId);
+
+        if (!optPresentation.isPresent()) {
+            return new ResponseEntity("No se encontró una presentación", HttpStatus.NOT_FOUND);
+        } else {
+            presentation = optPresentation.get();
+        }
+        Optional<User> optionalUser = userService.getByEmail(reservationDto.getEmail());
+        if (!optionalUser.isPresent()) {
+            return new ResponseEntity("Usuario no encontrado", HttpStatus.NOT_FOUND);
+        } else {
+            user = optionalUser.get();
+
         }
 
-        public  void delete(Long id){
-            reservationRepository.deleteById(id);
-        }
+        for (int i = 0; i < reservationDto.getChairsNumber(); i++) {
 
-        public boolean existById(Long id){
-                return reservationRepository.existsById(id);
-        }
-
-    public ResponseEntity<String> createReservation(@NotNull ReservationDto reservationDto,
-                                                    @NotNull Optional<Movie> optionalMovie) {
-            ReservedChairService reservedChairService= new ReservedChairService();
-            List<Chair>chairs= new ArrayList<>();
-            Movie movie= new Movie();
-            int row, column;
-            Optional<Chair> optionalChair;
-            for(int i=0; i<reservationDto.getChairsNumber(); i++){
-                row= reservationDto.getRows().get(i);
-                column= reservationDto.getColumns().get(i);
-
-               optionalChair = chairService.findByRowAndColumn(row,column);
-               if (!optionalChair.isPresent() || optionalChair.get().isReserved()){
-                   return new ResponseEntity<>("La silla no se encontró o está reservada", HttpStatus.BAD_REQUEST);
-               }else{
-                optionalChair.ifPresent(chairs::add);
-               optionalChair.get().setReserved(true);
-               }
+            optionalChair = chairService.findByRowAndColumn(reservationDto.getRows().get(i),
+                    reservationDto.getColumns().get(i));
+            if (optionalChair.isPresent()) {
+                chair = optionalChair.get();
+            } else {
+                return new ResponseEntity<>("Error al encontrar la silla", HttpStatus.NOT_FOUND);
             }
-            if (optionalMovie.isPresent()){
-                movie=optionalMovie.get();
-            }
+            if (!chair.isReserved()) {
 
-        Reservation reservation= new Reservation(
-                reservationDto.getChairsNumber(),
-                reservationDto.getPrice(),
-                reservationDto.getUser(),
-                movie,
-                reservedChairService.reserveChair(chairs)
-        );
+                chairs.add(chair);
+
+            } else
+                return new ResponseEntity<>("La silla ya se encuentra reservada", HttpStatus.BAD_REQUEST);
+        }
+
+        if (movieService.findById(reservationDto.getIdMovie()).isPresent()) {
+            price = (movieService.findById(reservationDto.getIdMovie()).get().getPrice()) * reservationDto.getChairsNumber();
+        }
+
+
+            Reservation reservation = new Reservation(
+                    reservationDto.getChairsNumber(),
+                    price,
+                    user,
+                    presentation
+                    );
+            user.addReservations(reservation);
+            reservation.setReservedChairs(reservedChairService.reserveChair(chairs,reservation).getBody());
             reservationRepository.save(reservation);
-
             return new ResponseEntity<>("Reserva Creada", HttpStatus.CREATED);
+
     }
 
     public ResponseEntity<String>deleteChairs(EditReservationDto editReservationDto){

@@ -26,7 +26,7 @@ public class NewUser implements Serializable {
     private String email;
     @NotBlank
     private String password;
-
+    
 
 
 

@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @Table(name="movie",  schema = "cinema_manage")
 public class Movie implements Serializable {
-
+    private static final long serialVersionUID = 6489021462409984216L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,8 +29,6 @@ public class Movie implements Serializable {
     private String synopsis;
      @Column(name = "format")
     private String format;
-     @Column(name = "schedule")
-    private String schedule;
      @Column(name = "duration")
     private String duration;
      @Column(name = "price")
@@ -38,19 +36,12 @@ public class Movie implements Serializable {
     @Column(name = "billboard")
     private boolean billboard= true;
 
+
+
+
     @JsonBackReference
-    @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY)
-    private List<Reservation> reservationList;
-
-    @JoinTable(
-            name = "presentation",
-            joinColumns = @JoinColumn(name = "movie_id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name="room_id", nullable = false)
-    )
-    //@JsonBackReference
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Room> rooms;
-
+    @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Presentation> presentations;
 
 
     public Movie(String title, String genre, String synopsis,
@@ -59,10 +50,9 @@ public class Movie implements Serializable {
         this.genre = genre;
         this.synopsis = synopsis;
         this.format = format;
-        this.schedule = schedule;
         this.duration = duration;
         this.price = price;
-        this.rooms=rooms;
+
     }
 
     public Movie() {
@@ -76,15 +66,31 @@ public class Movie implements Serializable {
         this.genre = genre;
         this.synopsis = synopsis;
         this.format = format;
-        this.schedule = schedule;
         this.duration = duration;
         this.price = price;
     }
 
-    public void addReservations(Reservation reservation){
-        if(reservationList==null) reservationList=new ArrayList<>();
-        reservationList.add(reservation);
-        reservation.setMovie(this);
+    public Movie(String title, String genre, String synopsis, String format, String duration, float price, List<Room> rooms) {
+
+    }
+
+    public Movie( String title, String genre, String synopsis, String format, String duration, float price, boolean billboard) {
+
+        this.title = title;
+        this.genre = genre;
+        this.synopsis = synopsis;
+        this.format = format;
+        this.duration = duration;
+        this.price = price;
+        this.billboard = billboard;
+    }
+
+    public List<Presentation> getPresentations() {
+        return presentations;
+    }
+
+    public void setPresentations(List<Presentation> presentations) {
+        this.presentations = presentations;
     }
 
     public long getId() {
@@ -123,13 +129,7 @@ public class Movie implements Serializable {
         this.format = format;
     }
 
-    public String getSchedule() {
-        return schedule;
-    }
 
-    public void setSchedule(String schedule) {
-        this.schedule = schedule;
-    }
 
     public boolean isBillboard() {
         return billboard;
@@ -155,24 +155,7 @@ public class Movie implements Serializable {
         this.duration = duration;
     }
 
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
-    }
 
-    public List<Long> getRooms(){
-        List<Long> idRooms= new ArrayList<>();
-        for (Room room:rooms) {
-            idRooms.add(room.getId());
-        }
-        return idRooms;
-    }
 
-    public List<Reservation> getReservationList() {
-        return reservationList;
-    }
-
-    public void setReservationList(List<Reservation> reservationList) {
-        this.reservationList = reservationList;
-    }
 
 }
