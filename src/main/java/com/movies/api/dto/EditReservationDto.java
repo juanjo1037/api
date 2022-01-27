@@ -10,6 +10,10 @@ import java.util.List;
 public class EditReservationDto  implements Serializable {
     private static final long serialVersionUID = 1L;
 
-   private List<Long> chairsToDelete;
+   private List<Long> chairsId;
+   private Long roomId;
+   private String schedule;
+   private String email;
+
 
 }

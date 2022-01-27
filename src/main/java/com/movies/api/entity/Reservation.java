@@ -1,117 +1,40 @@
 package com.movies.api.entity;
 
-
-
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.List;
 
-
+@Table(name = "reservation", indexes = {
+        @Index(name = "fk_reservation_user1_idx", columnList = "user_id"),
+        @Index(name = "fk_reservation_presentation1_idx", columnList = "presentation_room_id, presentation_schedule")
+})
+@Getter
+@Setter
 @Entity
-@Table(name="reservation",  schema = "cinema_manage")
-public class Reservation implements Serializable {
-    private static final long serialVersionUID = 6489021462409984216L;
-
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @Column(name = "chairs_number")
+public class Reservation {
+    @EmbeddedId
+    private ReservationId id;
+    @Column(name = "chairs_number", nullable = false)
     private int chairsNumber;
-    @Column(name="price")
-    private float price;
+    @Column(name = "price", nullable = false)
+    private Double price;
 
-
-    @JsonManagedReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-
-    @JsonManagedReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumns({
-            @JoinColumn(name = "presentation_movie_id", referencedColumnName = "movie_id"),
-            @JoinColumn(name = "presentation_room_id", referencedColumnName = "room_id"),
-            @JoinColumn(name = "presentation_schedule", referencedColumnName = "schedule")
-    })
-    private Presentation presentation;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "reservation", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<ReservedChair> reservedChairs;
-
+    public Reservation(ReservationId id, int chairsNumber, Double price) {
+        this.id = id;
+        this.chairsNumber = chairsNumber;
+        this.price = price;
+    }
 
     public Reservation() {
 
     }
 
-    public Reservation( int chairsNumber, float price, User user, Presentation presentation, List<ReservedChair> chairs) {
-        this.chairsNumber = chairsNumber;
-        this.price = price;
-        this.user = user;
-        this.presentation = presentation;
-        this.reservedChairs=chairs;
-    }
-
-    public Reservation(int chairsNumber, float price, User user, Presentation presentation) {
-        this.chairsNumber=chairsNumber;
-        this.price=price;
-        this.user=user;
-        this.presentation=presentation;
-    }
-
-    public long getId() {
+    public ReservationId getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(ReservationId id) {
         this.id = id;
-    }
-
-    public int getChairsNumber() {
-        return chairsNumber;
-    }
-
-    public void setChairsNumber(int chairsNumber) {
-        this.chairsNumber = chairsNumber;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Presentation getPresentation() {
-        return presentation;
-    }
-
-    public void setPresentation(Presentation presentation) {
-        this.presentation = presentation;
-    }
-
-
-    public List<ReservedChair> getReservedChairs() {
-        return reservedChairs;
-    }
-
-    public void setReservedChairs(List<ReservedChair> reservedChairs) {
-        this.reservedChairs = reservedChairs;
     }
 }

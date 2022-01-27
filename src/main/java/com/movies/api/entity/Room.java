@@ -1,34 +1,33 @@
 package com.movies.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.List;
 
+@Table(name = "room")
 @Entity
-@Table(name="room",  schema = "cinema_manage")
 @Getter
 @Setter
-public class Room implements Serializable {
-    private static final long serialVersionUID = 6489021462409984216L;
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
-    @Column(name = "capacity")
+    private Long id;
+
+    @Column(name = "capacity", nullable = false)
     private int capacity;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY)
-    private List<Chair> chairs;
+    @Column(name = "rows_number", nullable = false)
+    private int rowsNumber;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Presentation> presentations;
+    @Column(name = "columns_number", nullable = false)
+    private int columnsNumber;
 
 
+
+
+    public Room() {
+
+    }
 }

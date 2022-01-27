@@ -16,5 +16,7 @@ public interface PresentationRepository extends JpaRepository<Presentation, Pres
     Optional<Presentation>findById(PresentationId id);
     List<Presentation> findAllById(PresentationId id);
     List<Presentation>findAllByMovie(Movie movie);
-    List<Presentation>findAllByRoom(Room room);
+    List<Presentation>findAllById_RoomId(Long roomId);
+    boolean existsByIdAndMovie(PresentationId id, Movie movie);
+
 }

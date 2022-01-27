@@ -1,7 +1,5 @@
 package com.movies.api.dto;
 
-import com.movies.api.entity.Movie;
-import com.movies.api.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +17,6 @@ public class ReservationDto implements Serializable {
 
 
 
-    //  private float price; Lo calcula la api
 
     private String email;
 
@@ -29,7 +26,7 @@ public class ReservationDto implements Serializable {
 
     private int chairsNumber;
 
-    private List<Integer> rows;
+    private List<String> rows;
 
     private List<Integer> columns;
 

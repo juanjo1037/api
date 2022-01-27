@@ -1,66 +1,35 @@
 package com.movies.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
-
-import javax.persistence.*;
-import java.io.Serializable;
-
+@Table(name = "reserved_chair", indexes = {
+        @Index(name = "fk_reserved_chair_reservation1_idx", columnList = "reservation_presentation_room_id, reservation_presentation_schedule, reservation_user_id"),
+        @Index(name = "fk_reserved_chair_chair1_idx", columnList = "chair_id")
+})
 @Entity
-@Table(name = "reserved_chair",  schema = "cinema_manage")
-public class ReservedChair implements Serializable {
+public class ReservedChair {
+    @EmbeddedId
+    private ReservedChairId id;
 
-    private static final long serialVersionUID = 6489021462409984216L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
-    @JsonManagedReference
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "chair_id")
-    private Chair chair;
-
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reservation_id")
-    private Reservation reservation;
-
-    public ReservedChair(Chair chair) {
-        this.chair=chair;
+    public ReservedChair(ReservedChairId id) {
+        this.id = id;
     }
 
     public ReservedChair() {
 
     }
 
-    public ReservedChair(Chair chair, Reservation reservation) {
-        this.chair=chair;
-        this.reservation=reservation;
-    }
-
-    public Long getId() {
+    public ReservedChairId getId() {
         return id;
     }
-    public void setId(long id) {
+
+
+
+    public void setId(ReservedChairId id) {
         this.id = id;
-    }
-
-    public Chair getChair() {
-        return chair;
-    }
-
-    public void setChair(Chair chair) {
-        this.chair = chair;
-    }
-
-    public Reservation getReservation() {
-        return reservation;
-    }
-
-    public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
     }
 }

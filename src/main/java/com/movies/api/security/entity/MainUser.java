@@ -29,7 +29,7 @@ public class MainUser implements UserDetails {
         public static MainUser build(@NotNull User user){
             List<GrantedAuthority> authorities =
                     user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.
-                             getRolName().name())).collect(Collectors.toList());
+                             getRoleName().name())).collect(Collectors.toList());
             return new MainUser(user.getFirstName(),user.getLastName(),user.getEmail()
                     ,user.getPassword(),authorities);
 

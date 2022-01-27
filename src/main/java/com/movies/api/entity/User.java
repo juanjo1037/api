@@ -1,148 +1,58 @@
 package com.movies.api.entity;
 
+import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.sun.istack.NotNull;
-import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Table(name = "user")
 @Entity
-@Table(name = "user",  schema = "cinema_manage")
-@NoArgsConstructor
-
-public class User implements Serializable {
-    private static final long serialVersionUID = 6489021462409984216L;
-
+@Getter
+@Setter
+public class User {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-    @NotNull
-    @Column(name = "document_type")
+    @Column(name = "document_type", nullable = false, length = 45)
     private String documentType;
-    @NotNull
-    @Column(name = "document",unique = true)
 
+    @Column(name = "document", nullable = false, length = 45)
     private String document;
-    @NotNull
-    @Column(name = "first_name")
+
+    @Column(name = "first_name", nullable = false, length = 45)
     private String firstName;
-    @NotNull
-    @Column(name = "last_name")
+
+    @Column(name = "last_name", nullable = false, length = 45)
     private String lastName;
-    @NotNull
-    @Column( name = "email",unique = true)
+
+    @Column(name = "email", nullable = false, length = 45)
     private String email;
-    @NotNull
-    @Column(name = "password")
+
+    @Column(name = "password", nullable = false, length = 250)
     private String password;
+
     @NotNull
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "permission",
-            joinColumns = @JoinColumn(name = "user_id", nullable = false),
-            inverseJoinColumns = @JoinColumn(name= "role_id", nullable = false)
-    )
-    private List<Role> roles;
+    @JoinTable(name = "permission", joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles = new ArrayList<>();
 
-    @JsonBackReference
-    @OneToMany( mappedBy = "user", fetch = FetchType.LAZY)
-    private List<Reservation> reservationList;
-
-    public User(String documentType, String document, String firstName,
-                String lastName, String email, String password
-              ) {
-
+    public User(String documentType, String document, String firstName, String lastName, String email, String password) {
         this.documentType = documentType;
         this.document = document;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+    }
+
+    public User() {
+
+    }
 
 }
-
-public void addReservations(Reservation reservation){
-    if(reservationList==null) reservationList=new ArrayList<>();
-    reservationList.add(reservation);
-    reservation.setUser(this);
-}
-
-    public String getDocumentType() {
-        return documentType;
-    }
-
-    public void setDocumentType(String documentType) {
-        this.documentType = documentType;
-    }
-
-    public String getDocument() {
-        return document;
-    }
-
-    public void setDocument(String document) {
-        this.document = document;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-
-    public List<Reservation> getReservationList() {
-        return reservationList;
-    }
-
-    public void setReservationList(List<Reservation> reservationList) {
-        this.reservationList = reservationList;
-    }
-}
-
-
-
-

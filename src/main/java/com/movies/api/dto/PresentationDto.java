@@ -12,7 +12,8 @@ import lombok.Setter;
 @Setter
 public class PresentationDto {
 
-    Long idRoom;
-    Long idMovie;
-    String schedule;
+    private Long idRoom;
+    private Long idMovie;
+    private String schedule;
+
 }

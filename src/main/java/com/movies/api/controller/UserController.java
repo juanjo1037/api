@@ -3,9 +3,7 @@ package com.movies.api.controller;
 
 
 import com.movies.api.dto.NewUser;
-import com.movies.api.entity.Role;
-import com.movies.api.entity.User;
-import com.movies.api.enums.RolName;
+
 import com.movies.api.security.dto.JwtDto;
 import com.movies.api.security.dto.LoginUser;
 import com.movies.api.security.jwt.JwtProvider;
@@ -22,10 +20,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 @RestController
@@ -35,48 +31,18 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Autowired
-   PasswordEncoder passwordEncoder;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    RolService rolService;
-
-    @Autowired
-    JwtProvider jwtProvider;
 
     @Operation(summary = "registro de usuarios/ user registration")
     @PostMapping("/registration")
     public ResponseEntity<?> createUser(@Valid @RequestBody NewUser newUser, BindingResult bindingResult){
-            if (bindingResult.hasErrors())
-                return new ResponseEntity("Campos mal puestos", HttpStatus.BAD_REQUEST);
-            if(userService.existsByDocument(newUser.getDocument()))
-                return new ResponseEntity("Ya existe un usuario con ese documento", HttpStatus.BAD_REQUEST);
-            if(userService.existsByEmail(newUser.getEmail()))
-                return new ResponseEntity("Ya existe un usuario con ese correo", HttpStatus.BAD_REQUEST);
-
-
-        User user= new User(newUser.getDocumentType(),newUser.getDocument(),newUser.getFirstName(),newUser.getLastName(),
-                newUser.getEmail(),passwordEncoder.encode(newUser.getPassword()));
-        List<Role> roles = new ArrayList<>();
-        roles.add(rolService.getByRolName(RolName.ROLE_USER).get());
-        user.setRoles(roles);
-        userService.save(user);
-        return new ResponseEntity("Usuario Creado", HttpStatus.CREATED);
+        return userService.createUser(newUser,bindingResult);
     }
     @Operation(summary = "inicio de sesión/ login")
     @PostMapping("/login")
     public ResponseEntity<JwtDto> login(@Valid @RequestBody LoginUser loginUser, BindingResult bindingResult){
-        if (bindingResult.hasErrors())
-            return new ResponseEntity("Email o contraseña incorrectos", HttpStatus.BAD_REQUEST);
-        Authentication authentication= authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginUser.getEmail(),loginUser.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String jwt =  jwtProvider.generateToken(authentication);
-        JwtDto jwtDto= new JwtDto(jwt);
-        return new ResponseEntity<>(jwtDto, HttpStatus.OK);
+      return userService.login(loginUser, bindingResult);
     }
 
 }

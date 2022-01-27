@@ -1,17 +1,15 @@
 package com.movies.api.dto;
 
-import com.movies.api.entity.Room;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter
 public class MovieDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -19,9 +17,10 @@ public class MovieDto implements Serializable {
     private String genre;
     private String synopsis;
     private String format;
+    private String image;
     private String duration;
-    private float price;
+    private Double price;
     private boolean billboard;
-
+    private String backDropImg;
 
 }

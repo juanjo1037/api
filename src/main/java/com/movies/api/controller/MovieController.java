@@ -4,7 +4,6 @@ package com.movies.api.controller;
 import com.movies.api.dto.Message;
 import com.movies.api.dto.MovieDto;
 import com.movies.api.entity.Movie;
-import com.movies.api.entity.Room;
 import com.movies.api.service.MovieService;
 import com.movies.api.service.RoomService;
 
@@ -16,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/movie")
@@ -26,35 +24,36 @@ public class MovieController {
     @Autowired
     MovieService movieService;
 
-    @Autowired
-    RoomService roomService;
-
 
     @Operation(summary = "Listar las peliculas que están en cartelera / List the movies that are on the billboard")
     @GetMapping
+    public ResponseEntity<List<Movie>>listAllOnBillboard(){
+        return new ResponseEntity(movieService.findMoviesByBillboard(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Listar todas las peliculas")
+    @GetMapping("/all")
     public ResponseEntity<List<Movie>>listAll(){
-        List<Movie> list=movieService.findMoviesByBillboard();
-        return new ResponseEntity(list, HttpStatus.OK);
+        return new ResponseEntity<>(movieService.findAll(),HttpStatus.OK);
     }
     @Operation(summary = "Obtener una pelicula por su id")
     @GetMapping("/{id}")
     public ResponseEntity<Movie>getById(@PathVariable("id")Long id){
 
-        if(movieService.existById(id))
-            return new ResponseEntity(new Message("no existe una pelicula con ese Id"), HttpStatus.NOT_FOUND);
-        Movie movie= movieService.findById(id).get();
-        return new ResponseEntity(movie, HttpStatus.OK);
-    }
-    @Operation(summary = "Obtener una pelicula por su titulo/Get a movie by its title")
-    @GetMapping("/{title}")
-    public ResponseEntity<Movie> getByTitle(@PathVariable("title")String title){
+        if(!movieService.existById(id)){
+            return new ResponseEntity("no existe una pelicula con ese Id", HttpStatus.BAD_REQUEST);
+        }else{
 
-        if(movieService.findByTitle(title)==null)
-            return new ResponseEntity(new Message("no existe una pelicula con ese titulo"), HttpStatus.NOT_FOUND);
-        Movie movie= (Movie) movieService.findByTitle(title);
-        return new ResponseEntity(movie, HttpStatus.OK);
+        return new ResponseEntity(movieService.findById(id).get(), HttpStatus.OK);
+        }
     }
-    
+
+    @Operation(summary="Obtener todas las peliculas de un genero")
+    @GetMapping("/list")
+    public ResponseEntity<List<Movie>> listByGenre(@RequestParam("genre") String genre){
+        return movieService.listByGenre(genre);
+    }
+
     @Operation(summary = "crear una pelicula/ create  movie")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -74,10 +73,12 @@ public class MovieController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id")Long id){
-        if(movieService.existById(id))
-            return new ResponseEntity(new Message("no existe una reserva con ese Id"), HttpStatus.NOT_FOUND);
-        movieService.delete(id);
-        return new ResponseEntity<>(new Message("reserva eliminada"), HttpStatus.OK);
+        if(movieService.existById(id)){
+            movieService.delete(id);
+            return new ResponseEntity<>("pelicula eliminada", HttpStatus.OK);
+        }else
+            return new ResponseEntity("no se encontró la pelicula", HttpStatus.NOT_FOUND);
+
 
     }
 }

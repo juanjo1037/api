@@ -35,18 +35,26 @@ public class PresentationService {
    public List<Presentation> findAllbyId(PresentationId id){
         return presentationRepository.findAllById(id);
     }
-    public List<Presentation>findAllByMovie(Movie movie){
-        return presentationRepository.findAllByMovie(movie);
+
+
+    public List<Presentation>findAllByMovie(Long id){
+
+       if (movieService.findById(id).isPresent()){
+            Movie movie = movieService.findById(id).get();
+            return presentationRepository.findAllByMovie(movie);
+        }
+       else
+           return null;
+
     }
-    public List<Presentation>findAllByRoom(Room room){
-        return  presentationRepository.findAllByRoom(room);
+    public List<Presentation>findAllByRoom(Long room){
+        return  presentationRepository.findAllById_RoomId(room);
     }
 
 
    public ResponseEntity<String>createPresentation(PresentationDto presentationDto){
        Movie movie;
-       Room room;
-        PresentationId presentationId= new PresentationId(presentationDto.getIdMovie(),
+        PresentationId presentationId= new PresentationId(
                 presentationDto.getIdRoom(),
                 presentationDto.getSchedule()
         );
@@ -57,13 +65,24 @@ public class PresentationService {
             return new ResponseEntity<>("No se encontró una pelicula con ese id", HttpStatus.NOT_FOUND);
         }
         Optional<Room>optionalRoom= roomService.findById(presentationDto.getIdRoom());
-        if (optionalRoom.isPresent()){
-            room=optionalRoom.get();
-        }else {
+        if (!optionalRoom.isPresent()){
             return new ResponseEntity<>("No se encontró una sala con ese id", HttpStatus.NOT_FOUND);
         }
-       Presentation presentation= new Presentation(presentationId,movie, room);
+       Presentation presentation= new Presentation(presentationId,movie);
+        if (!presentationRepository.existsByIdAndMovie(presentationId, movie)){
         presentationRepository.save(presentation);
         return new ResponseEntity<>("Presentación creada", HttpStatus.CREATED);
+        }else
+            return new ResponseEntity<>("Ya existe una presentación para esa pelicula en esa sala y en ese horario", HttpStatus.BAD_REQUEST);
+    }
+
+    public ResponseEntity<String> deletePresentation (PresentationDto presentationDto){
+            PresentationId presentationId= new PresentationId(presentationDto.getIdRoom(), presentationDto.getSchedule());
+            if(presentationRepository.existsById(presentationId)){
+                presentationRepository.deleteById(presentationId);
+                return new ResponseEntity<>("Presentación Eliminada", HttpStatus.OK);
+            }else
+                return new ResponseEntity<>("No hay una presentación con ese ID", HttpStatus.NOT_FOUND);
+
     }
 }

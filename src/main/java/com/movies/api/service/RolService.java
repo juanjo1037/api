@@ -17,7 +17,7 @@ public class RolService {
     RolRepository rolRepository;
 
     public Optional<Role> getByRolName(RolName rolName){
-        return rolRepository.findByRolName(rolName);
+        return rolRepository.findByRoleName(rolName);
 
     }
 }

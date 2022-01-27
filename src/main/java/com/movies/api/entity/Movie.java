@@ -1,161 +1,60 @@
 package com.movies.api.entity;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-
+@Table(name = "movie")
 @Entity
-@Table(name="movie",  schema = "cinema_manage")
-public class Movie implements Serializable {
-    private static final long serialVersionUID = 6489021462409984216L;
-
+@Getter
+@Setter
+public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private long id;
-    @Column(name = "title")
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(name = "title", nullable = false, length = 45)
     private String title;
-    @Column(name = "genre")
+
+    @Column(name = "genre", nullable = false, length = 45)
     private String genre;
-     @Column(name = "synopsis")
+
+    @Column(name = "synopsis", nullable = false, length = 200)
     private String synopsis;
-     @Column(name = "format")
+
+    @Column(name = "image", length = 250)
+    private String image;
+
+    @Column(name = "format", nullable = false, length = 45)
     private String format;
-     @Column(name = "duration")
+
+    @Column(name = "duration", nullable = false, length = 20)
     private String duration;
-     @Column(name = "price")
-    private float price;
-    @Column(name = "billboard")
-    private boolean billboard= true;
 
+    @Column(name = "price", nullable = false)
+    private Double price;
 
+    @Column(name = "billboard", nullable = false)
+    private Boolean billboard = false;
 
+    @Column(name = "backdrop_img", length = 300)
+    private String backDropImg;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "movie", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Presentation> presentations;
-
-
-    public Movie(String title, String genre, String synopsis,
-                 String format, String schedule, String duration, float price, List<Room> rooms) {
+    public Movie(String title, String genre, String synopsis, String image, String format, String duration, Double price, Boolean billboard, String backDropImg) {
         this.title = title;
         this.genre = genre;
         this.synopsis = synopsis;
+        this.image = image;
         this.format = format;
         this.duration = duration;
         this.price = price;
-
+        this.billboard = billboard;
+        this.backDropImg = backDropImg;
     }
 
     public Movie() {
 
     }
-
-    public Movie(String title, String genre, String synopsis, String format, String schedule, String duration, float price)
-    {
-
-        this.title = title;
-        this.genre = genre;
-        this.synopsis = synopsis;
-        this.format = format;
-        this.duration = duration;
-        this.price = price;
-    }
-
-    public Movie(String title, String genre, String synopsis, String format, String duration, float price, List<Room> rooms) {
-
-    }
-
-    public Movie( String title, String genre, String synopsis, String format, String duration, float price, boolean billboard) {
-
-        this.title = title;
-        this.genre = genre;
-        this.synopsis = synopsis;
-        this.format = format;
-        this.duration = duration;
-        this.price = price;
-        this.billboard = billboard;
-    }
-
-    public List<Presentation> getPresentations() {
-        return presentations;
-    }
-
-    public void setPresentations(List<Presentation> presentations) {
-        this.presentations = presentations;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getGenre() {
-        return genre;
-    }
-
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
-
-    public String getSynopsis() {
-        return synopsis;
-    }
-
-    public void setSynopsis(String synopsis) {
-        this.synopsis = synopsis;
-    }
-
-    public String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-
-
-    public boolean isBillboard() {
-        return billboard;
-    }
-
-    public void setBillboard(boolean billboard) {
-        this.billboard = billboard;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public String getDuration() {
-        return duration;
-    }
-
-    public void setDuration(String duration) {
-        this.duration = duration;
-    }
-
-
-
-
 }

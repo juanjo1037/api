@@ -1,42 +1,29 @@
 package com.movies.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.movies.api.enums.RolName;
-import com.sun.istack.NotNull;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
+
 import javax.persistence.*;
-import java.util.List;
 
+@Table(name = "role")
 @Entity
-@Table(name = "role",  schema = "cinema_manage")
-@NoArgsConstructor
-
-public class Role  {
-
-
-
+@Getter
+@Setter
+public class Role {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private long id;
-     @NotNull
-     @Column(name = "role_name")
-     @Enumerated(EnumType.STRING)
-     private RolName rolName;
+    @Column(name = "id", nullable = false)
+    private Long id;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role_name", nullable = false, length = 45)
+    private RolName roleName;
 
+    public Role() {
 
-
-    public Role(@NotNull RolName rolName) {
-        this.rolName = rolName;
     }
-
-    public RolName getRolName() {
-        return rolName;
-    }
-
-    public void setRolName(RolName rolName) {
-        this.rolName = rolName;
-    }
-
 
 
 }

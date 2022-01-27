@@ -1,36 +1,29 @@
 package com.movies.api.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-
 import javax.persistence.*;
-import java.io.Serializable;
 
+@Table(name = "chair", indexes = {
+        @Index(name = "fk_chair_room1_idx", columnList = "room_id")
+})
 @Entity
-@Table(name = "chair",  schema = "cinema_manage")
-public class Chair implements Serializable {
-    private static final long serialVersionUID = 6489021462409984216L;
+public class Chair {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false, columnDefinition = "LONGVARBINARY")
-    private long id;
-    @Column(name="row")
-    private int row;
-    @Column(name="column")
-    private int column;
-    @Column(name = "reserved")
-    private boolean reserved= false;
-    @JsonBackReference
-    @OneToOne(mappedBy = "chair", orphanRemoval = true, fetch = FetchType.LAZY)
-    private ReservedChair reservedChair;
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "room_id")
+    @Column(name = "row", nullable = false)
+    private String row;
+
+    @Column(name = "`column`", nullable = false)
+    private Integer column;
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "room_id", nullable = false)
     private Room room;
+
+
+
 
 
     public Room getRoom() {
@@ -41,44 +34,27 @@ public class Chair implements Serializable {
         this.room = room;
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getColumn() {
+    public Integer getColumn() {
         return column;
     }
 
-    public void setColumn(int column) {
+    public void setColumn(Integer column) {
         this.column = column;
     }
 
-    public boolean isReserved() {
-        return reserved;
+    public String getRow() {
+        return row;
     }
 
-    public void setReserved(boolean reserved) {
-        this.reserved = reserved;
+    public void setRow(String row) {
+        this.row = row;
     }
 
-
-    public ReservedChair getReservedChair() {
-        return reservedChair;
+    public Long getId() {
+        return id;
     }
 
-    public void setReservedChair(ReservedChair reservedChair) {
-        this.reservedChair = reservedChair;
+    public void setId(Long id) {
+        this.id = id;
     }
 }
