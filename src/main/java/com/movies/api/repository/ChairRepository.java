@@ -13,7 +13,6 @@ import java.util.Optional;
 public interface ChairRepository  extends JpaRepository<Chair,Long> {
 
     @Override
-    @NotNull
     Optional<Chair> findById(@NotNull Long id);
     @Override
     boolean existsById(@NotNull Long id);

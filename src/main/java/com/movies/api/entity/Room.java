@@ -25,7 +25,11 @@ public class Room {
     private int columnsNumber;
 
 
-
+    public Room(int capacity, int rowsNumber, int columnsNumber) {
+        this.capacity = capacity;
+        this.rowsNumber = rowsNumber;
+        this.columnsNumber = columnsNumber;
+    }
 
     public Room() {
 

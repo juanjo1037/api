@@ -2,10 +2,12 @@ package com.movies.api.controller;
 
 
 import com.movies.api.dto.PresentationDto;
+import com.movies.api.dto.RoomDto;
 import com.movies.api.entity.Chair;
 import com.movies.api.entity.Presentation;
 import com.movies.api.service.ChairService;
 import com.movies.api.service.PresentationService;
+import com.movies.api.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,8 @@ public class PresentationController {
     PresentationService presentationService;
     @Autowired
     ChairService chairService;
+    @Autowired
+    RoomService roomService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
@@ -55,5 +59,9 @@ public class PresentationController {
     public ResponseEntity<List<Chair>>listChairsByRoom(@PathVariable("idRoom")Long idRoom){
 
         return new ResponseEntity<>(chairService.findAllByRoom(idRoom), HttpStatus.ACCEPTED);
+    }
+    @PostMapping("/room")
+    public ResponseEntity<String>createRoom(@RequestBody RoomDto roomDto){
+        return new ResponseEntity<>(roomService.createRoom(roomDto),HttpStatus.CREATED);
     }
 }

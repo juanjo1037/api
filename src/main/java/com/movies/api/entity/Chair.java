@@ -7,15 +7,16 @@ import javax.persistence.*;
 })
 @Entity
 public class Chair {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "row", nullable = false)
+    @Column(name = "chair_row", nullable = false)
     private String row;
 
-    @Column(name = "`column`", nullable = false)
+    @Column(name = "chair_column", nullable = false)
     private Integer column;
 
     @ManyToOne(optional = false)
@@ -23,8 +24,15 @@ public class Chair {
     private Room room;
 
 
+    public Chair(String row, Integer column, Room room) {
+        this.row = row;
+        this.column = column;
+        this.room = room;
+    }
 
+    public Chair() {
 
+    }
 
     public Room getRoom() {
         return room;

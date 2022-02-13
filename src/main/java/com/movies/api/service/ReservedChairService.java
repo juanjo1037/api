@@ -1,5 +1,6 @@
 package com.movies.api.service;
 
+import com.movies.api.dto.ReservedChairDto;
 import com.movies.api.entity.Chair;
 import com.movies.api.entity.ReservedChair;
 import com.movies.api.entity.ReservedChairId;
@@ -21,8 +22,8 @@ public class ReservedChairService {
     @Autowired
     ReservedChairRepository reservedChairRepository;
 
-    public List<ReservedChair> findByIdRoom(Long idRoom){
-        return reservedChairRepository.findAllById_ReservationPresentationRoomId(idRoom);
+    public List<ReservedChair> findByIdRoomAndSchedule(Long idRoom, String schedule){
+        return reservedChairRepository.findAllById_ReservationPresentationRoomIdAndId_ReservationPresentationSchedule(idRoom,schedule);
 
     }
     public Optional<ReservedChair> findById(ReservedChairId id) {
@@ -40,7 +41,7 @@ public class ReservedChairService {
         for(Chair chair: chairs){
             ReservedChairId reservedChairId = new ReservedChairId(chair.getId(), idRoom,schedule,id);
             ReservedChair reservedChair= new ReservedChair(reservedChairId);
-            if (!reservedChairRepository.existsByIdChairIdAndId_ReservationPresentationRoomIdAndId_ReservationPresentationSchedule(chair.getId(), idRoom,schedule)){
+            if (!reservedChairRepository.existsById(reservedChairId)){
             chairsReserved.add(reservedChair);
             }else
                 return  new ResponseEntity("La silla ya está reservada", HttpStatus.BAD_REQUEST);
@@ -58,5 +59,10 @@ public class ReservedChairService {
         public void deleteByReservation(Long idRoom, String schedule, Long userId){
             reservedChairRepository.deleteAllById_ReservationPresentationRoomIdAndId_ReservationPresentationScheduleAndId_ReservationUserId(idRoom,schedule,userId);
         }
+        public List<ReservedChair>findByUserAndPresentation(Long roomId, String schedule, Long userId){
+            return reservedChairRepository.
+                    findAllById_ReservationPresentationRoomIdAndId_ReservationPresentationScheduleAndId_ReservationUserId(roomId,schedule,userId);
+        }
+
 
 }

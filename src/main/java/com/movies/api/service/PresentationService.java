@@ -69,11 +69,11 @@ public class PresentationService {
             return new ResponseEntity<>("No se encontró una sala con ese id", HttpStatus.NOT_FOUND);
         }
        Presentation presentation= new Presentation(presentationId,movie);
-        if (!presentationRepository.existsByIdAndMovie(presentationId, movie)){
+        if (!presentationRepository.existsById(presentationId)){
         presentationRepository.save(presentation);
         return new ResponseEntity<>("Presentación creada", HttpStatus.CREATED);
         }else
-            return new ResponseEntity<>("Ya existe una presentación para esa pelicula en esa sala y en ese horario", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Ya existe una presentación en esa sala y en ese horario", HttpStatus.BAD_REQUEST);
     }
 
     public ResponseEntity<String> deletePresentation (PresentationDto presentationDto){

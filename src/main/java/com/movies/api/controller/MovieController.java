@@ -1,11 +1,9 @@
 package com.movies.api.controller;
 
 
-import com.movies.api.dto.Message;
 import com.movies.api.dto.MovieDto;
 import com.movies.api.entity.Movie;
 import com.movies.api.service.MovieService;
-import com.movies.api.service.RoomService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +34,17 @@ public class MovieController {
     public ResponseEntity<List<Movie>>listAll(){
         return new ResponseEntity<>(movieService.findAll(),HttpStatus.OK);
     }
+
     @Operation(summary = "Obtener una pelicula por su id")
     @GetMapping("/{id}")
     public ResponseEntity<Movie>getById(@PathVariable("id")Long id){
 
-        if(!movieService.existById(id)){
-            return new ResponseEntity("no existe una pelicula con ese Id", HttpStatus.BAD_REQUEST);
+        if(movieService.existById(id)){
+            return new ResponseEntity(movieService.findById(id).get(), HttpStatus.OK);
         }else{
 
-        return new ResponseEntity(movieService.findById(id).get(), HttpStatus.OK);
+
+            return new ResponseEntity("no existe una pelicula con ese Id", HttpStatus.BAD_REQUEST);
         }
     }
 

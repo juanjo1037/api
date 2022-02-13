@@ -6,16 +6,18 @@ import com.movies.api.entity.Room;
 import com.movies.api.repository.ChairRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ChairService {
 
     @Autowired
-    final ChairRepository chairRepository;
+    ChairRepository chairRepository;
 
     @Autowired
     RoomService roomService;
@@ -38,6 +40,19 @@ public class ChairService {
          return chairRepository.findAllByRoom(room);
      }
      return new ArrayList<>();
+    }
+
+    public void createChairs(int rowsNumber, int columnsNumber,Room room){
+
+        for (int i=0; i<rowsNumber;i++){
+            char row= ((char)(i+65));
+            for(int j=0; j<columnsNumber; j++){
+                // convertimos el numero a letra con ASCII
+                Chair chair= new Chair(Character.toString(row),j+1,room);
+                chairRepository.save(chair);
+            }
+        }
+
     }
 
 }

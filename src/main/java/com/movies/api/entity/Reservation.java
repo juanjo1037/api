@@ -18,9 +18,16 @@ public class Reservation {
     @Column(name = "chairs_number", nullable = false)
     private int chairsNumber;
     @Column(name = "price", nullable = false)
-    private Double price;
+    private double price;
 
-    public Reservation(ReservationId id, int chairsNumber, Double price) {
+    @ManyToOne(optional = false)
+    @JoinColumns({
+            @JoinColumn(name="presentation_schedule", referencedColumnName="schedule",insertable = false,updatable = false),
+            @JoinColumn(name="presentation_room_id", referencedColumnName="room_id",insertable = false,updatable = false)
+    })
+    private Presentation presentation;
+
+    public Reservation(ReservationId id, int chairsNumber, double price) {
         this.id = id;
         this.chairsNumber = chairsNumber;
         this.price = price;

@@ -3,6 +3,7 @@ package com.movies.api.repository;
 
 import com.movies.api.entity.ReservedChair;
 import com.movies.api.entity.ReservedChairId;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -11,15 +12,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ReservedChairRepository extends JpaRepository<ReservedChair, Long> {
+public interface ReservedChairRepository extends JpaRepository<ReservedChair, ReservedChairId> {
 
-    Optional<ReservedChair> findById(ReservedChairId id);
+    @NotNull Optional<ReservedChair> findById(@NotNull ReservedChairId id);
 
-    void deleteById(ReservedChairId id);
+    void deleteById(@NotNull ReservedChairId id);
 
-    boolean existsByIdChairIdAndId_ReservationPresentationRoomIdAndId_ReservationPresentationSchedule(Long idChair, Long idRoom, String schedule);
-
+    List<ReservedChair>findAllById_ReservationPresentationRoomIdAndId_ReservationPresentationScheduleAndId_ReservationUserId(Long idRoom, String schedule, Long userId);
     boolean existsById_ChairId (Long chairId);
-    List<ReservedChair> findAllById_ReservationPresentationRoomId(Long idRoom);
+    List<ReservedChair> findAllById_ReservationPresentationRoomIdAndId_ReservationPresentationSchedule(Long idRoom, String schedule);
     void deleteAllById_ReservationPresentationRoomIdAndId_ReservationPresentationScheduleAndId_ReservationUserId(Long roomId, String schedule, Long userId);
+
 }
