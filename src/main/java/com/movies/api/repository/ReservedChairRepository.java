@@ -22,5 +22,6 @@ public interface ReservedChairRepository extends JpaRepository<ReservedChair, Re
     boolean existsById_ChairId (Long chairId);
     List<ReservedChair> findAllById_ReservationPresentationRoomIdAndId_ReservationPresentationSchedule(Long idRoom, String schedule);
     void deleteAllById_ReservationPresentationRoomIdAndId_ReservationPresentationScheduleAndId_ReservationUserId(Long roomId, String schedule, Long userId);
+    boolean existsById_ReservationPresentationRoomIdAndId_ReservationPresentationSchedule(Long roomId, String schedule);
 
 }

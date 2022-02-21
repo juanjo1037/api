@@ -183,6 +183,7 @@ public class ReservationService {
             reservation.setChairsNumber(reservationDto.getChairsNumber());
             reservation.setPrice(price);
             reservedChairService.deleteByReservation(reservationDto.getIdRoom(),reservationDto.getSchedule(),userId);
+
             reservationRepository.save(reservation);
             reservedChairService.reserveChair(chairs, reservationDto.getIdRoom(), reservationDto.getSchedule(), userId);
         }else

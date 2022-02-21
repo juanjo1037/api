@@ -30,8 +30,8 @@ public class ReservedChairService {
         return reservedChairRepository.findById(id);
     }
 
-    public boolean existsByChairId(Long chairId){
-        return reservedChairRepository.existsById_ChairId(chairId);
+    public boolean existsByPresentation(Long roomId, String schedule){
+        return reservedChairRepository.existsById_ReservationPresentationRoomIdAndId_ReservationPresentationSchedule(roomId,schedule);
     }
 
     public ResponseEntity reserveChair(List<Chair> chairs, Long idRoom, String schedule, Long id ){

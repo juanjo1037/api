@@ -22,5 +22,6 @@ public class MovieDto implements Serializable {
     private Double price;
     private boolean billboard;
     private String backDropImg;
+    private boolean comingSoon;
 
 }

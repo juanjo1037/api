@@ -14,6 +14,8 @@ public class Presentation {
     @ManyToOne(optional = false)
     @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
+    @Column(name = "is_available")
+    private boolean available;
 
     public Presentation() {
 
@@ -23,9 +25,10 @@ public class Presentation {
         return movie;
     }
 
-    public Presentation(PresentationId id, Movie movie) {
+    public Presentation(PresentationId id, Movie movie, boolean deleted) {
         this.id = id;
         this.movie = movie;
+        this.available =deleted;
     }
 
     public void setMovie(Movie movie) {
@@ -38,5 +41,13 @@ public class Presentation {
 
     public void setId(PresentationId id) {
         this.id = id;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
     }
 }

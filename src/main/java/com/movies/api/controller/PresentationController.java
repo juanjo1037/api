@@ -5,6 +5,7 @@ import com.movies.api.dto.PresentationDto;
 import com.movies.api.dto.RoomDto;
 import com.movies.api.entity.Chair;
 import com.movies.api.entity.Presentation;
+import com.movies.api.entity.Room;
 import com.movies.api.service.ChairService;
 import com.movies.api.service.PresentationService;
 import com.movies.api.service.RoomService;
@@ -63,5 +64,14 @@ public class PresentationController {
     @PostMapping("/room")
     public ResponseEntity<String>createRoom(@RequestBody RoomDto roomDto){
         return new ResponseEntity<>(roomService.createRoom(roomDto),HttpStatus.CREATED);
+    }
+    @GetMapping("/room")
+    public ResponseEntity<List<Room>>listRooms(){
+        return new ResponseEntity(roomService.getAllRooms(),HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<String>updatePresentation(@RequestBody PresentationDto presentationDto){
+        return new ResponseEntity(presentationService.updatePresentation(presentationDto), HttpStatus.OK);
     }
 }

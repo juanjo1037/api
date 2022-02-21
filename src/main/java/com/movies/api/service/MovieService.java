@@ -4,6 +4,7 @@ package com.movies.api.service;
 import com.movies.api.dto.MovieDto;
 import com.movies.api.entity.Movie;
 import com.movies.api.repository.MovieRepository;
+import com.movies.api.repository.PresentationRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,9 +24,11 @@ public class MovieService {
 
     @Autowired
     MovieRepository movieRepository;
+    @Autowired
+    PresentationService presentationService;
 
     public Optional<Movie> findById(Long id){
-        return movieRepository.findById(id);
+        return movieRepository.findByIdAndDeleted(id, false);
     }
 
 
@@ -36,26 +39,35 @@ public class MovieService {
 
 
 
-    public void delete(Long id) {
-        movieRepository.deleteById(id);
-    }
+    public void delete(Long id)
+    {
+        Optional<Movie>optionalMovie=movieRepository.findById(id);
+        if(optionalMovie.isPresent()) {
+            Movie movie = optionalMovie.get();
+            movie.setDeleted(true);
+        }
 
+    }
     public List<Movie>findMoviesByBillboard(){
-            List<Movie> movies = movieRepository.findMoviesByBillboard(true);
+            List<Movie> movies = movieRepository.findMoviesByBillboardAndDeleted(true,false);
         Collections.shuffle(movies);
         return movies;
         }
+    public List<Movie>findMoviesByComingSoon(){
+        List<Movie> movies = movieRepository.findMoviesByComingSoonAndDeleted(true,false);
+        Collections.shuffle(movies);
+        return movies;
+    }
 
     public List<Movie>findAll(){
-        return movieRepository.findAll();
+        return movieRepository.findAllByDeleted(false);
     }
-    public List<Movie> findByTitle(String title) { return movieRepository.findByTitle(title);}
 
     public Optional<Movie>findByTitleAndFormat(String title, String format){
-        return movieRepository.findByTitleAndFormat(title,format);
+        return movieRepository.findByTitleAndFormatAndDeleted(title,format,false);
     }
     public boolean existsByTitleAndFormat(String title, String format){
-        return movieRepository.existsByTitleAndFormat(title, format);
+        return movieRepository.existsByTitleAndFormatAndDeleted(title, format, false);
     }
     public ResponseEntity<String> createMovie(@NotNull MovieDto movieDto) {
 
@@ -69,10 +81,11 @@ public class MovieService {
                     movieDto.getDuration(),
                     movieDto.getPrice(),
                     movieDto.isBillboard(),
-                    movieDto.getBackDropImg());
+                    movieDto.getBackDropImg(), movieDto.isComingSoon());
+
 
             movieRepository.save(movie);
-            return new ResponseEntity<>("pelicula creada", HttpStatus.CREATED);
+            return new ResponseEntity<>("Pelicula creada con exito", HttpStatus.CREATED);
     }else
         return new ResponseEntity<>("La pelicula ya existe", HttpStatus.BAD_REQUEST);
 
@@ -84,16 +97,20 @@ public class MovieService {
         Movie movie= movieRepository.findById(id).get();
         movie.setTitle(movieDto.getTitle());
         movie.setGenre(movieDto.getGenre());
+        movie.setDuration(movieDto.getDuration());
         movie.setSynopsis(movieDto.getSynopsis());
         movie.setImage(movieDto.getImage());
         movie.setFormat(movieDto.getFormat());
+        movie.setBillboard(movieDto.isBillboard());
         movie.setPrice(movieDto.getPrice());
+        movie.setBackDropImg(movieDto.getBackDropImg());
+        movie.setComingSoon(movieDto.isComingSoon());
         return new ResponseEntity<>("Pelicula Actualizada", HttpStatus.OK);}
 
     }
         public ResponseEntity<List<Movie>> listByGenre(String genre) {
-            if (!movieRepository.findAllByGenreContaining(genre).isEmpty()) {
-                return new ResponseEntity<>(movieRepository.findAllByGenreContaining(genre), HttpStatus.OK);
+            if (!movieRepository.findAllByGenreContainingAndDeleted(genre,false).isEmpty()) {
+                return new ResponseEntity<>(movieRepository.findAllByGenreContainingAndDeleted(genre,false), HttpStatus.OK);
             } else {
                 return new ResponseEntity("no hay peliculas con ese genero", HttpStatus.NOT_FOUND);
             }

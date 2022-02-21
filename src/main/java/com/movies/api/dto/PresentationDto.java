@@ -15,5 +15,6 @@ public class PresentationDto {
     private Long idRoom;
     private Long idMovie;
     private String schedule;
+    private boolean available;
 
 }

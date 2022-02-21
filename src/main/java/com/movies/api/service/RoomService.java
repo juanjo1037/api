@@ -33,4 +33,7 @@ public class RoomService {
             chairService.createChairs(roomDto.getRowsNumber(),roomDto.getColumnsNumber(),room);
     return "Sala creada satisfactoriamente";
 }
+    public List<Room>getAllRooms(){
+        return roomRepository.findAll();
+    }
 }

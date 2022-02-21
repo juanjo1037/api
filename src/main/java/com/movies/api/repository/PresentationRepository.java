@@ -13,10 +13,9 @@ import java.util.Optional;
 @Repository
 public interface PresentationRepository extends JpaRepository<Presentation, PresentationId> {
 
-    Optional<Presentation>findById(PresentationId id);
-    List<Presentation> findAllById(PresentationId id);
-    List<Presentation>findAllByMovie(Movie movie);
-    List<Presentation>findAllById_RoomId(Long roomId);
-    boolean existsByIdAndMovie(PresentationId id, Movie movie);
-
+    Optional<Presentation>findByIdAndAvailable(PresentationId id, boolean available);
+    List<Presentation> findAllByIdAndAvailable(PresentationId id, boolean available);
+    List<Presentation>findAllByMovieAndAvailable(Movie movie, boolean available);
+    List<Presentation>findAllById_RoomIdAndAvailable(Long roomId, boolean available);
+    boolean existsByMovieAndAvailable(Movie movie, boolean available);
 }

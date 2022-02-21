@@ -29,6 +29,11 @@ public class MovieController {
         return new ResponseEntity(movieService.findMoviesByBillboard(), HttpStatus.OK);
     }
 
+    @GetMapping("/coming_soon")
+    public ResponseEntity<List<Movie>>listAllByComingSoon(){
+            return new ResponseEntity(movieService.findMoviesByComingSoon(), HttpStatus.OK);
+    }
+
     @Operation(summary = "Listar todas las peliculas")
     @GetMapping("/all")
     public ResponseEntity<List<Movie>>listAll(){

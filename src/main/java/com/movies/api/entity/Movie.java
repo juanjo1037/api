@@ -37,12 +37,19 @@ public class Movie {
     private Double price;
 
     @Column(name = "billboard", nullable = false)
-    private Boolean billboard = false;
+    private boolean billboard = false;
 
     @Column(name = "backdrop_img", length = 300)
     private String backDropImg;
 
-    public Movie(String title, String genre, String synopsis, String image, String format, String duration, Double price, Boolean billboard, String backDropImg) {
+    @Column(name = "coming_soon" )
+    private boolean comingSoon=false;
+
+    @Column(name = "is_deleted")
+    private boolean deleted=false;
+
+
+    public Movie(String title, String genre, String synopsis, String image, String format, String duration, Double price, boolean billboard, String backDropImg, boolean comingSoon) {
         this.title = title;
         this.genre = genre;
         this.synopsis = synopsis;
@@ -52,9 +59,11 @@ public class Movie {
         this.price = price;
         this.billboard = billboard;
         this.backDropImg = backDropImg;
+        this.comingSoon = comingSoon;
     }
 
     public Movie() {
 
     }
+
 }

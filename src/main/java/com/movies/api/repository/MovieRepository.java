@@ -21,18 +21,18 @@ public interface MovieRepository extends JpaRepository<Movie,Long> {
     @Override
     boolean existsById(@NotNull Long id );
 
+    Optional<Movie> findByIdAndDeleted(@NotNull Long id, boolean deleted);
 
+    List<Movie>findMoviesByBillboardAndDeleted(boolean billboard, boolean deleted);
+    List<Movie>findAllByDeleted(boolean deleted);
+    List<Movie> findByTitleAndDeleted(String title, boolean deleted);
 
-    List<Movie>findMoviesByBillboard(boolean billboard);
+    Optional<Movie> findByTitleAndFormatAndDeleted(String title, String format, boolean deleted);
 
-    List<Movie> findByTitle(String title);
+    boolean existsByTitleAndFormatAndDeleted(String title, String format, boolean deleted);
 
-    Optional<Movie> findByTitleAndFormat(String title, String format);
+    List<Movie> findAllByGenreContainingAndDeleted(String genre, boolean deleted);
 
-    boolean existsByTitleAndFormat(String title, String format);
-
-    List<Movie> findAllByGenreContaining(String genre);
-
-
+        List<Movie>findMoviesByComingSoonAndDeleted(boolean isComingSoon, boolean deleted);
 
 }

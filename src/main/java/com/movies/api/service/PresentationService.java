@@ -22,9 +22,11 @@ public class PresentationService {
     MovieService movieService;
     @Autowired
     RoomService roomService;
+    @Autowired
+    ReservedChairService reservedChairService;
 
    public Optional<Presentation> findById(PresentationId id){
-        return presentationRepository.findById(id);
+        return presentationRepository.findByIdAndAvailable(id, true);
     }
 
     public ResponseEntity<List<Presentation>> listAll(){
@@ -33,7 +35,7 @@ public class PresentationService {
     }
 
    public List<Presentation> findAllbyId(PresentationId id){
-        return presentationRepository.findAllById(id);
+        return presentationRepository.findAllByIdAndAvailable(id, true);
     }
 
 
@@ -41,14 +43,17 @@ public class PresentationService {
 
        if (movieService.findById(id).isPresent()){
             Movie movie = movieService.findById(id).get();
-            return presentationRepository.findAllByMovie(movie);
+            return presentationRepository.findAllByMovieAndAvailable(movie,true);
         }
        else
            return null;
 
     }
+    public boolean existsByMovie(Movie movie){
+       return presentationRepository.existsByMovieAndAvailable(movie, true);
+    }
     public List<Presentation>findAllByRoom(Long room){
-        return  presentationRepository.findAllById_RoomId(room);
+        return  presentationRepository.findAllById_RoomIdAndAvailable(room, true);
     }
 
 
@@ -68,7 +73,7 @@ public class PresentationService {
         if (!optionalRoom.isPresent()){
             return new ResponseEntity<>("No se encontró una sala con ese id", HttpStatus.NOT_FOUND);
         }
-       Presentation presentation= new Presentation(presentationId,movie);
+       Presentation presentation= new Presentation(presentationId,movie,presentationDto.isAvailable());
         if (!presentationRepository.existsById(presentationId)){
         presentationRepository.save(presentation);
         return new ResponseEntity<>("Presentación creada", HttpStatus.CREATED);
@@ -84,5 +89,33 @@ public class PresentationService {
             }else
                 return new ResponseEntity<>("No hay una presentación con ese ID", HttpStatus.NOT_FOUND);
 
+    }
+
+    public ResponseEntity<String> updatePresentation(PresentationDto presentationDto) {
+        Movie movie;
+        PresentationId presentationId= new PresentationId(
+                presentationDto.getIdRoom(),
+                presentationDto.getSchedule()
+        );
+        if (movieService.findById(presentationDto.getIdMovie()).isPresent()){
+            movie=movieService.findById(presentationDto.getIdMovie()).get();
+            if(movie.isComingSoon()){
+                return new ResponseEntity("Esta pelicula aun no está en cartelera, debes actualizarla",HttpStatus.FORBIDDEN);
+            }
+        }else {
+            return new ResponseEntity("No se encontró una pelicula con ese id", HttpStatus.NOT_FOUND);
+        }
+        Optional<Presentation>optionalPresentation=presentationRepository.findByIdAndAvailable(presentationId,true);
+        if (optionalPresentation.isPresent()){
+            if(!reservedChairService.existsByPresentation(presentationId.getRoomId(), presentationId.getSchedule())){
+                Presentation presentation = optionalPresentation.get();
+                presentation.setMovie(movie);
+                presentation.setAvailable(presentationDto.isAvailable());
+                presentationRepository.save(presentation);
+                return new ResponseEntity("Presentación Actualizada", HttpStatus.OK);
+            }else
+                return  new ResponseEntity<>("Ya existen reservas para esa pelicula, no se puede actualizar la presentación", HttpStatus.BAD_REQUEST);
+        }else
+            return new ResponseEntity("No se pudo encontrar la presentación", HttpStatus.BAD_REQUEST);
     }
 }
